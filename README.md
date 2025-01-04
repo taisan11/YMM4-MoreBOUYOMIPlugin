@@ -1,17 +1,17 @@
 # YMM4-MoreBOUYOMIPlugin
-����͖_�ǂ݂������ǂ����Ă��g�������l���쐬����Plugin�ł��B
-## �g����
-### �O��\�t�g�̃C���X�g�[��
-�g�p����ɂ�[�_�ǂ݂����](https://chi.usamimi.info/Program/Application/BouyomiChan/)�Ǝ���̂������[�_�ǂ݂����p��Plugin](https://github.com/taisan11/Plugin_HTTPAPICreateWav)���K�v�ł��B
-�܂��_�ǂ݂������_�E�����[�h���A�C�ӂ̃f�B���N�g���ɓW�J!!�����āA���ɂ�����s�t�@�C���Ɠ����ꏊ�ɖ_�ǂ݂����p��Plugin�����܂��B
-### ����Plugin�̃C���X�g�[��
-�����[�X�y�[�W�ɂ���`.ymme`���_�E�����[�h����YMM4�Ƀh���b�O�A���h�h���b�v�����OK�ł��B
-�������瑼�̐����Ɠ����悤�Ɏg���܂��B
-### ����Plugin�̓Ǝ��̋@�\
-�_�ǂ݂���񑤂Őݒ�ł���3��ނ̃p�����[�^�[���������悤�ɂȂ��Ă܂��B
-���ꂾ���ł��B
-## ���b
-### ���O�̗��R
-�����Ɩ_�ǂ݂����Ƃ̌݊����𑝂₵����!!���Ă����Ӗ��ł��B
+これは棒読みちゃんをどうしても使いたい人が作成したPluginです。
+## 使い方
+### 前提ソフトのインストール
+使用するには[棒読みちゃん](https://chi.usamimi.info/Program/Application/BouyomiChan/)と自作のこちらの[棒読みちゃん用のPlugin](https://github.com/taisan11/Plugin_HTTPAPICreateWav)が必要です。
+まず棒読みちゃんをダウンロードし、任意のディレクトリに展開!!そして、中にある実行ファイルと同じ場所に棒読みちゃん用のPluginを入れます。
+### このPluginのインストール
+リリースページにある`.ymme`をダウンロードしてYMM4にドラッグアンドドロップすればOKです。
+そしたら他の声質と同じように使えます。
+### このPluginの独自の機能
+棒読みちゃん側で設定できる3種類のパラメーターをいじれるようになってます。
+それだけです。
+## 裏話
+### 名前の理由
+もっと棒読みちゃんとの互換性を増やしたい!!っていう意味です。
 ### ToDo:
- - �_�ǂ݂���񎩓��N���@�\
+ - 棒読みちゃん自動起動機能
