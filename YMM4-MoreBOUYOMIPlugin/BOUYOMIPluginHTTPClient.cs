@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Net.Http;
 using System.IO;
+using Windows.Win32.Foundation;
 
 public class Voice {
     public int id { get; set; }
@@ -14,23 +15,44 @@ public class VoiceListResponse {
 }
 
 public static class BOUYOMIPluginHTTPClient {
-    public static void TalkAsync(string port, string text, int speed, int volume, int voice, int tone, string filename)
+    public static async Task<Boolean>TalkAsync(string port, string text, int speed, int volume, int voice, int tone, string filename)
     {
         System.Console.WriteLine("リクエスト送るよ!!");
         try
         {
             string url = $"http://localhost:{port}/speak?text={Uri.EscapeDataString(text)}&speed={speed}&volume={volume}&voice={voice}&tone={tone}&filename={Uri.EscapeDataString(filename + ".wav")}";
             HttpClient client = new HttpClient();
-            Task<HttpResponseMessage> response = client.GetAsync(url);
-            response.Wait();
-            // Move the file to a new location
+            HttpResponseMessage response = await client.GetAsync(url);
+            System.Console.WriteLine(response.ToString());
+            string responseBody = await response.Content.ReadAsStringAsync();
+            System.Console.WriteLine(responseBody);
+
             string sourceFile = filename + ".wav";
-            File.Move(sourceFile, filename);
+            string destFile = filename;
+            int retryCount = 0;
+            int maxRetries = 500;
+            int delay = 10; // 500ms
+
+            while (!File.Exists(sourceFile) && retryCount < maxRetries)
+            {
+                await Task.Delay(delay);
+                retryCount++;
+            }
+
+            if (File.Exists(sourceFile))
+            {
+                File.Move(sourceFile, destFile);
+            }
+            else
+            {
+                throw new FileNotFoundException($"Could not find file '{sourceFile}' after {maxRetries} retries.");
+            }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
+        return true;
     }
 
     private static async Task<VoiceListResponse?> GetVoiceListAsync(string port)

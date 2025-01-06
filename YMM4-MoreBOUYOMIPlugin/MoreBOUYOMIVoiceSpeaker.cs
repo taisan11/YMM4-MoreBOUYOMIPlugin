@@ -127,7 +127,7 @@ namespace MoreBOUYOMIVoicePlugin {
                 // CapCutAPIClient.TalkAsyncを使用して音声データを取得
                 int IDa = await BOUYOMIPluginHTTPClient.Name2IDAsync(ID, viewModel.PortNumber) ?? 0;
                 //byte[] audioData = await BOUYOMIPluginHTTPClient.TalkAsync(text, ID, param.Pitch, param.Speed, param.Volume);
-                BOUYOMIPluginHTTPClient.TalkAsync(viewModel.WavPortNumber,text,param.Speed,param.Volume, IDa, param.Pitch,filePath);
+                await BOUYOMIPluginHTTPClient.TalkAsync(viewModel.WavPortNumber,text,param.Speed,param.Volume, IDa, param.Pitch,filePath);
             }
             finally
             {
