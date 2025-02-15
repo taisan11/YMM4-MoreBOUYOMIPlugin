@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using System.Net.Http;
 using System.IO;
-using Windows.Win32.Foundation;
 
 public class Voice {
     public int id { get; set; }
