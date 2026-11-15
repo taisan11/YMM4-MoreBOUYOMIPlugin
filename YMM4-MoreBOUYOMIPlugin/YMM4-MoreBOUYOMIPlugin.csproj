@@ -1,21 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-	<TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
-	<UseWPF>true</UseWPF>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <PlatformTarget>x64</PlatformTarget>
     <RootNamespace>YMM4MoreBOUYOMI</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <DeployToYmm4 Condition="'$(DeployToYmm4)' == ''">false</DeployToYmm4>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="YukkuriMovieMaker.Controls">
+      <HintPath>$(YMM4_PATH)\YukkuriMovieMaker.Controls.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="YukkuriMovieMaker.Plugin">
+      <HintPath>$(YMM4_PATH)\YukkuriMovieMaker.Plugin.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(YMM4_PATH)\Newtonsoft.Json.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Content Include="..\README.md;..\LICENSE.txt">
+      <Link>%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="YukkuriMovieMaker.Controls">
-			<HintPath>C:\Users\kappy\Videos\編集アプリ\YukkuriMovieMaker_v4_Lite\YukkuriMovieMaker.Controls.dll</HintPath>
-		</Reference>
-		<Reference Include="YukkuriMovieMaker.Plugin">
-			<HintPath>C:\Users\kappy\Videos\編集アプリ\YukkuriMovieMaker_v4_Lite\YukkuriMovieMaker.Plugin.dll</HintPath>
-		</Reference>
-	</ItemGroup>
-	
+  <Import Project="..\build\Ymm4Plugin.targets" />
 </Project>

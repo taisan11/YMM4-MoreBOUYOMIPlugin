@@ -1,5 +1,4 @@
-﻿using System.IO;
-using YukkuriMovieMaker.Plugin.Voice;
+﻿using YukkuriMovieMaker.Plugin.Voice;
 
 namespace MoreBOUYOMIVoicePlugin {
     public class MoreBOUYOMIVoiceSpeaker : IVoiceSpeaker {
@@ -38,7 +37,10 @@ namespace MoreBOUYOMIVoicePlugin {
         /// <summary>
         /// サポートしているセリフの形式（英語のみ、AquesTalk形式のみ等）
         /// </summary>
-        public SupportedTextFormat Format => SupportedTextFormat.Text;
+        // Yukkuriを指定すると、YMM4側がAquesTalk音声記号列へ変換してから渡す。
+        public SupportedTextFormat Format => MoreBOUYOMIVoiceSettings.Default.UseRawMode
+            ? SupportedTextFormat.Yukkuri
+            : SupportedTextFormat.Text;
 
         /// <summary>
         /// 音声合成前に利用規約に同意する必要がある場合はここにインスタンスを設定する
@@ -121,13 +123,15 @@ namespace MoreBOUYOMIVoicePlugin {
             await semaphore.WaitAsync();
             try
             {
-                MoreBOUYOMIVoiceSettings settings = new MoreBOUYOMIVoiceSettings();
-                MoreBOUYOMIVoiceSettingsViewModel viewModel = settings.viewModel;
+                var settings = MoreBOUYOMIVoiceSettings.Default;
+                await BouyomiProcessLauncher.EnsureRunningAsync(
+                    settings.BouyomiExecutablePath, settings.WavPortNumber);
                 var param = parameter as MoreBOUYOMIVoiceParameter ?? (MoreBOUYOMIVoiceParameter)CreateVoiceParameter();
-                // CapCutAPIClient.TalkAsyncを使用して音声データを取得
-                int IDa = await BOUYOMIPluginHTTPClient.Name2IDAsync(ID, viewModel.PortNumber) ?? 0;
-                //byte[] audioData = await BOUYOMIPluginHTTPClient.TalkAsync(text, ID, param.Pitch, param.Speed, param.Volume);
-                await BOUYOMIPluginHTTPClient.TalkAsync(viewModel.WavPortNumber,text,param.Speed,param.Volume, IDa, param.Pitch,filePath);
+                int voiceId = await BOUYOMIPluginHTTPClient.Name2IDAsync(ID, settings.WavPortNumber)
+                    ?? throw new InvalidOperationException($"棒読みちゃんの声「{ID}」が見つかりません。声質一覧を再読み込みしてください。");
+                await BOUYOMIPluginHTTPClient.TalkAsync(
+                    settings.WavPortNumber, text, param.Speed, param.Volume, voiceId, param.Pitch,
+                    filePath, settings.UseRawMode);
             }
             finally
             {

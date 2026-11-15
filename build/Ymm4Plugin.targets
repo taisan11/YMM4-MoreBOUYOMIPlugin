@@ -1,0 +1,48 @@
+<Project>
+  <Target Name="ValidateYmm4References" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(YMM4_PATH)\YukkuriMovieMaker.Plugin.dll') Or !Exists('$(YMM4_PATH)\YukkuriMovieMaker.Controls.dll') Or !Exists('$(YMM4_PATH)\Newtonsoft.Json.dll')"
+           Text="YMM4の参照DLLが見つかりません。YMM4_PATHにYMM4本体のフォルダを指定してください。現在値: $(YMM4_PATH)" />
+  </Target>
+
+  <!-- These runtime assemblies are already provided by YMM4. -->
+  <Target Name="ExcludeYmm4RuntimeAssemblies" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)"
+                            Condition="'%(ResolvedFileToPublish.Filename)' == 'Microsoft.Windows.SDK.NET' Or '%(ResolvedFileToPublish.Filename)' == 'WinRT.Runtime'" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PackageYmme" AfterTargets="Publish">
+    <PropertyGroup>
+      <YmmeStage>$(IntermediateOutputPath)ymme\</YmmeStage>
+      <YmmeOutput>$(MSBuildProjectDirectory)\..\artifacts\$(AssemblyName).ymme</YmmeOutput>
+    </PropertyGroup>
+    <RemoveDir Directories="$(YmmeStage)" />
+    <MakeDir Directories="$(YmmeStage)$(AssemblyName);$(MSBuildProjectDirectory)\..\artifacts" />
+    <ItemGroup>
+      <YmmeFiles Include="@(ResolvedFileToPublish)"
+                 Condition="'%(ResolvedFileToPublish.Extension)' != '.pdb'">
+        <PackageRelativePath>%(ResolvedFileToPublish.RelativePath)</PackageRelativePath>
+      </YmmeFiles>
+    </ItemGroup>
+    <Copy SourceFiles="@(YmmeFiles)"
+          DestinationFiles="@(YmmeFiles->'$(YmmeStage)$(AssemblyName)\%(PackageRelativePath)')" />
+    <ZipDirectory SourceDirectory="$(YmmeStage)" DestinationFile="$(YmmeOutput)" Overwrite="true" />
+    <Message Text="YMM4 package: $(YmmeOutput)" Importance="high" />
+  </Target>
+
+  <!-- Opt-in only: never remove existing plugin files or user settings. -->
+  <Target Name="DeployPlugin" AfterTargets="Build" Condition="'$(DeployToYmm4)' == 'true'">
+    <PropertyGroup>
+      <Ymm4PluginDirectory>$(YMM4_PATH)\user\plugin\$(AssemblyName)\</Ymm4PluginDirectory>
+    </PropertyGroup>
+    <ItemGroup>
+      <Ymm4DeployFiles Include="$(TargetPath);$(TargetDir)README.md;$(TargetDir)LICENSE.txt" />
+      <Ymm4DeployFiles Include="$(TargetDir)$(TargetName).pdb"
+                      Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    </ItemGroup>
+    <MakeDir Directories="$(Ymm4PluginDirectory)" />
+    <Copy SourceFiles="@(Ymm4DeployFiles)" DestinationFolder="$(Ymm4PluginDirectory)" SkipUnchangedFiles="true" />
+    <Message Text="Plugin deployed: $(Ymm4PluginDirectory)" Importance="high" />
+  </Target>
+</Project>
